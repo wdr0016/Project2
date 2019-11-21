@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class ProductServer {
-    static String dbfile = "C:\\Users\\Willm\\Documents\\COMP3700\\store.db";
+    static String dbfile = "C:\\Users\\Willm\\Documents\\COMP3700\\Project2\\data\\store.db";
 
     public static void main(String[] args) {
 
