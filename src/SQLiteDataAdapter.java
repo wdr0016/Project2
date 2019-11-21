@@ -1,10 +1,14 @@
 
+import javax.swing.*;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class SQLiteDataAdapter implements IDataAdapter {
 
@@ -38,78 +42,117 @@ public class SQLiteDataAdapter implements IDataAdapter {
     }
 
     public ProductModel loadProduct(int productID) {
-        ProductModel product = null;
+        ProductModel product = new ProductModel();
 
         try {
-            String sql = "SELECT ProductId, Name, Price, Quantity FROM Products WHERE ProductId = " + productID;
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                product = new ProductModel();
-                product.mProductID = rs.getInt("ProductId");
-                product.mName = rs.getString("Name");
-                product.mPrice = rs.getDouble("Price");
-                product.mQuantity = rs.getDouble("Quantity");
+            Socket link = new Socket("localhost", 1000);
+            Scanner input = new Scanner(link.getInputStream());
+            PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
+            output.println("GET");
+            output.println(productID);
+
+            product.mName = input.nextLine();
+
+            if (product.mName.equals("null")) {
+                JOptionPane.showMessageDialog(null, "Product NOT exists!");
+                return null;
             }
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            product.mPrice = input.nextDouble();
+
+            product.mQuantity = input.nextDouble();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return product;
     }
+
     public int saveProduct(ProductModel product) {
         try {
-            String sql = "INSERT INTO Products(ProductId, Name, Price, Quantity) VALUES " + product;
-            System.out.println(sql);
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
+            Socket link = new Socket("localhost", 1000);
+            Scanner input = new Scanner(link.getInputStream());
+            PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
+            output.println("PUT");
+            output.println(product.mProductID);
+            output.println(product.mName);
+            output.println(product.mPrice);
+            output.println(product.mQuantity);
+            return PRODUCT_SAVED_OK;
 
         } catch (Exception e) {
-            String msg = e.getMessage();
-            System.out.println(msg);
-            if (msg.contains("UNIQUE constraint failed"))
-                return PRODUCT_DUPLICATE_ERROR;
+            e.printStackTrace();
+            return PRODUCT_DUPLICATE_ERROR;
         }
-
-        return PRODUCT_SAVED_OK;
     }
 
     @Override
     public int savePurchase(PurchaseModel purchase) {
         try {
-            String sql = "INSERT INTO Purchases VALUES " + purchase;
-            System.out.println(sql);
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
+            Socket link = new Socket("localhost", 1000);
+            Scanner input = new Scanner(link.getInputStream());
+            PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
+            output.println("PUTPU");
+            output.println(purchase.mPurchaseID);
+            output.println(purchase.mCustomerID);
+            output.println(purchase.mProductID);
+            output.println(purchase.mQuantity);
+            return PURCHASE_SAVED_OK;
 
         } catch (Exception e) {
-            String msg = e.getMessage();
-            System.out.println(msg);
-            if (msg.contains("UNIQUE constraint failed"))
-                return PURCHASE_DUPLICATE_ERROR;
+            e.printStackTrace();
+            return PRODUCT_DUPLICATE_ERROR;
         }
-
-        return PURCHASE_SAVED_OK;
 
     }
 
+    public int saveCustomer(CustomerModel customer) {
+        try {
+            Socket link = new Socket("localhost", 1000);
+            Scanner input = new Scanner(link.getInputStream());
+            PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
+            output.println("PUTC");
+            output.println(customer.mCustomerID);
+            output.println(customer.mName);
+            output.println(customer.mAddress);
+            output.println(customer.mPhone);
+
+            return CUSTOMER_SAVED_OK;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CUSTOMER_DUPLICATE_ERROR;
+        }
+    }
+
     public CustomerModel loadCustomer(int id) {
-        CustomerModel customer = null;
+        CustomerModel customer = new CustomerModel();
 
         try {
-            String sql = "SELECT * FROM Customers WHERE CustomerId = " + id;
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next()) {
-                customer = new CustomerModel();
-                customer.mCustomerID = id;
-                customer.mName = rs.getString("Name");
-                customer.mPhone = rs.getString("Phone");
-                customer.mAddress = rs.getString("Address");
+            Socket link = new Socket("localhost", 1000);
+            Scanner input = new Scanner(link.getInputStream());
+            PrintWriter output = new PrintWriter(link.getOutputStream(), true);
+
+            output.println("GETC");
+            output.println(id);
+
+            customer.mName = input.nextLine();
+
+            if (customer.mName.equals("null")) {
+                JOptionPane.showMessageDialog(null, "Customer NOT exists!");
+                return null;
             }
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            customer.mAddress = input.nextLine();
+
+            customer.mPhone = input.nextLine();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return customer;
     }

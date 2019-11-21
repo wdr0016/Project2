@@ -47,6 +47,15 @@ public class MainUI {
             }
         });
 
+        btnAddCustomer.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                AddCustomerUI ac = new AddCustomerUI();
+                ac.run();
+            }
+        });
+
         btnAddPurchase.addActionListener(new ActionListener() {
 
             @Override

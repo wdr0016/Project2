@@ -224,6 +224,41 @@ public class ProductServer {
 
                 }
 
+                if (command.equals("PUTPU")) {
+                    String id = in.nextLine();  // read all information from client
+                    String customerID = in.nextLine();
+                    String productID = in.nextLine();
+                    String quantity = in.nextLine();
+
+                    System.out.println("PUT command with CustomerID = " + id);
+
+                    Connection conn = null;
+                    try {
+                        String url = "jdbc:sqlite:" + dbfile;
+                        conn = DriverManager.getConnection(url);
+
+                        String sql = "SELECT * FROM Purchases WHERE PurchaseID = " + id;
+                        Statement stmt = conn.createStatement();
+                        ResultSet rs = stmt.executeQuery(sql);
+
+                        if (rs.next()) {
+                            rs.close();
+                            stmt.execute("DELETE FROM Purchases WHERE PurchaseID = " + id);
+                        }
+
+                        sql = "INSERT INTO Purchases VALUES (" + id + ", " + customerID + ", " + productID +
+                                ", 0.0, " + quantity + ", 0.0, 0.0, 0.0, \"Today\")";
+                        System.out.println("SQL for PUT: " + sql);
+                        stmt.execute(sql);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    conn.close();
+
+
+                }
+
                 else {
                     out.println(0); // logout unsuccessful!
                 }

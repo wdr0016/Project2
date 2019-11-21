@@ -22,9 +22,6 @@ public class StoreManager {
     }
 
     private StoreManager(String dbms, String dbfile) {
-        if (dbms.equals("Oracle"))
-            adapter = new OracleDataAdapter();
-        else
         if (dbms.equals("SQLite"))
             adapter = new SQLiteDataAdapter();
 
