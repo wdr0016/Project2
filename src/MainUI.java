@@ -13,6 +13,7 @@ public class MainUI {
 
     public JButton btnUpdateProduct = new JButton("Update Product Information");
     public JButton btnUpdateCustomer = new JButton("Update Customer Information");
+    public JButton btnUpdatePurchase = new JButton("Update Purchase Information");
 
     public MainUI() {
         this.view = new JFrame();
@@ -33,6 +34,7 @@ public class MainUI {
         panelButtons.add(btnAddPurchase);
         panelButtons.add(btnUpdateProduct);
         panelButtons.add(btnUpdateCustomer);
+        panelButtons.add(btnUpdatePurchase);
 
         view.getContentPane().add(panelButtons);
 
@@ -66,6 +68,14 @@ public class MainUI {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 UpdateCustomerUI ui = new UpdateCustomerUI();
+                ui.run();
+            }
+        });
+
+        btnUpdatePurchase.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                UpdatePurchaseUI ui = new UpdatePurchaseUI();
                 ui.run();
             }
         });

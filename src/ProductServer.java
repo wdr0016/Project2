@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class ProductServer {
-    static String dbfile = "C:\\Users\\Willm\\Documents\\COMP3700\\activitiesdb.db";
+    static String dbfile = "C:\\Users\\Willm\\Documents\\COMP3700\\store.db";
 
     public static void main(String[] args) {
 
@@ -79,6 +79,34 @@ public class ProductServer {
                             out.println(rs.getString("Name")); // send back product name!
                             out.println(rs.getString("Address")); // send back product price!
                             out.println(rs.getString("Phone")); // send back product quantity!
+                        }
+                        else
+                            out.println("null");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    conn.close();
+                }
+
+                if (command.equals("GETP")) {
+                    String str = in.nextLine();
+                    System.out.println("GET purchase with id = " + str);
+                    int purchaseID = Integer.parseInt(str);
+
+                    Connection conn = null;
+                    try {
+                        String url = "jdbc:sqlite:" + dbfile;
+                        conn = DriverManager.getConnection(url);
+
+                        String sql = "SELECT * FROM Purchases WHERE PurchaseID = " + purchaseID;
+                        Statement stmt = conn.createStatement();
+                        ResultSet rs = stmt.executeQuery(sql);
+
+                        if (rs.next()) {
+                            out.println(rs.getInt("CustomerID")); // send back product name!
+                            out.println(rs.getInt("ProductID")); // send back product price!
+                            out.println(rs.getDouble("Quantity")); // send back product quantity!
                         }
                         else
                             out.println("null");
